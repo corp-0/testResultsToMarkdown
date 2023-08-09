@@ -1,19 +1,25 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import { extractTestCases, parseXml, readXmlFile } from "./deXmler";
+import { produceComment } from "./markdowner";
 
 async function run(): Promise<void> {
-  try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+  const onlyFailures = Boolean(core.getInput('onlyFailures'));
+  const testResultFile = core.getInput('testResultFile');
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+  core.info(`Starting action with onlyFailures=${onlyFailures} and testResultFile=${testResultFile}`);
 
-    core.setOutput('time', new Date().toTimeString())
-  } catch (error) {
-    if (error instanceof Error) core.setFailed(error.message)
-  }
+  const content = await readXmlFile(testResultFile);
+  core.debug(`Read ${content.length} characters from ${testResultFile}`);
+  const xmlContent = await parseXml(content);
+  core.debug(`Parsed xml content`);
+  const cases = extractTestCases(xmlContent['test-run']['test-suite'][0]);
+  core.info(`Extracted ${cases.length} total test cases`);
+
+  const toComment = !onlyFailures ? cases : cases.filter((c) => c.$.result === 'Failed');
+  core.info(`Will comment on ${toComment.length} test cases`);
+  const comment = produceComment(toComment);
+  core.info(`Comment: ${comment}`);
+  core.setOutput('markdownText', comment);
 }
 
 run()

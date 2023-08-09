@@ -1,11 +1,17 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'testResultsToMarkdown'
+description: 'Parses a Nunit test result file and outputs a markdown table with the errors and failures'
+author: 'corp-0'
 inputs:
-  milliseconds: # change this
+  testResultsFile:
+    description: 'The path to the test results file'
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  onlyFailures:
+    description: 'Only output failures and errors'
+    required: false
+    default: true
+outputs:
+  markdownText:
+    description: 'The markdown table'
 runs:
   using: 'node16'
   main: 'dist/index.js'
