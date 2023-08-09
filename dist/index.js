@@ -107,9 +107,10 @@ const deXmler_1 = __nccwpck_require__(7670);
 const markdowner_1 = __nccwpck_require__(3266);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        const onlyFailures = Boolean(core.getInput('onlyFailures'));
-        const testResultFile = core.getInput('testResultFile');
-        core.info(`Starting action with onlyFailures=${onlyFailures} and testResultFile=${testResultFile}`);
+        const onlyFailures = Boolean(core.getInput('onlyFailures', { required: false }));
+        const testResultFile = core.getInput('testResultsFile', { required: true });
+        core.info(`testResultsFile is: ${testResultFile}`);
+        core.info(`onlyFailures is: ${onlyFailures}`);
         const content = yield (0, deXmler_1.readXmlFile)(testResultFile);
         core.debug(`Read ${content.length} characters from ${testResultFile}`);
         const xmlContent = yield (0, deXmler_1.parseXml)(content);

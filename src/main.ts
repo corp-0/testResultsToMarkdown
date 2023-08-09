@@ -3,10 +3,11 @@ import { extractTestCases, parseXml, readXmlFile } from "./deXmler";
 import { produceComment } from "./markdowner";
 
 async function run(): Promise<void> {
-  const onlyFailures = Boolean(core.getInput('onlyFailures'));
-  const testResultFile = core.getInput('testResultsFile');
+  const onlyFailures = Boolean(core.getInput('onlyFailures', { required: false}));
+  const testResultFile = core.getInput('testResultsFile', { required: true });
 
-  core.info(`Starting action with onlyFailures=${onlyFailures} and testResultsFile=${testResultFile}`);
+  core.info(`testResultsFile is: ${testResultFile}`);
+  core.info(`onlyFailures is: ${onlyFailures}`);
 
   const content = await readXmlFile(testResultFile);
   core.debug(`Read ${content.length} characters from ${testResultFile}`);
