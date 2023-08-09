@@ -4,9 +4,9 @@ import { produceComment } from "./markdowner";
 
 async function run(): Promise<void> {
   const onlyFailures = Boolean(core.getInput('onlyFailures'));
-  const testResultFile = core.getInput('testResultFile');
+  const testResultFile = core.getInput('testResultsFile');
 
-  core.info(`Starting action with onlyFailures=${onlyFailures} and testResultFile=${testResultFile}`);
+  core.info(`Starting action with onlyFailures=${onlyFailures} and testResultsFile=${testResultFile}`);
 
   const content = await readXmlFile(testResultFile);
   core.debug(`Read ${content.length} characters from ${testResultFile}`);
